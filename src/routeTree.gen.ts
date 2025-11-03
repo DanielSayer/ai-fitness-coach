@@ -12,6 +12,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ActivitiesActivityIdRouteImport } from './routes/activities/$activityId'
 
 const AuthSignInLazyRouteImport = createFileRoute('/auth/sign-in')()
 
@@ -25,30 +26,39 @@ const AuthSignInLazyRoute = AuthSignInLazyRouteImport.update({
   path: '/auth/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/auth/sign-in.lazy').then((d) => d.Route))
+const ActivitiesActivityIdRoute = ActivitiesActivityIdRouteImport.update({
+  id: '/activities/$activityId',
+  path: '/activities/$activityId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/auth/sign-in': typeof AuthSignInLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/auth/sign-in': typeof AuthSignInLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/auth/sign-in': typeof AuthSignInLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth/sign-in'
+  fullPaths: '/' | '/activities/$activityId' | '/auth/sign-in'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/sign-in'
-  id: '__root__' | '/' | '/auth/sign-in'
+  to: '/' | '/activities/$activityId' | '/auth/sign-in'
+  id: '__root__' | '/' | '/activities/$activityId' | '/auth/sign-in'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivitiesActivityIdRoute: typeof ActivitiesActivityIdRoute
   AuthSignInLazyRoute: typeof AuthSignInLazyRoute
 }
 
@@ -68,11 +78,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/activities/$activityId': {
+      id: '/activities/$activityId'
+      path: '/activities/$activityId'
+      fullPath: '/activities/$activityId'
+      preLoaderRoute: typeof ActivitiesActivityIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivitiesActivityIdRoute: ActivitiesActivityIdRoute,
   AuthSignInLazyRoute: AuthSignInLazyRoute,
 }
 export const routeTree = rootRouteImport
