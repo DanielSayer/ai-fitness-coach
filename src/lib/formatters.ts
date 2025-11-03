@@ -1,8 +1,5 @@
 export function metersToKm(meters: number, decimals = 2): number {
-  return (
-    Math.round((meters / 1000) * Math.pow(10, decimals)) /
-    Math.pow(10, decimals)
-  );
+  return Math.round((meters / 1000) * 10 ** decimals) / 10 ** decimals;
 }
 
 export function formatDuration(totalSeconds: number): string {

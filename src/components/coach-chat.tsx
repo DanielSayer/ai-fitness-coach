@@ -1,8 +1,7 @@
 import { Bot, Send, Sparkles, User } from "lucide-react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Activity } from "@/lib/types/activity";
@@ -16,11 +15,9 @@ export function AICoachChat({ activity }: AICoachChatProps) {
   const messages = [
     {
       role: "assistant",
-      content: `Great job on your ${
-        activity.activityName
-      }! I noticed you spent ${activity.hrZonesPercent.zone5Pct.toFixed(
+      content: `Great job on your ${activity.activityName}! I noticed you spent ${activity.hrZonesPercent.zone5Pct.toFixed(
         1,
-      )}% of your time in Zone 5. Let's talk about your performance.`,
+      )}% of your time in Zone 5 — impressive effort. Let's review how to make that effort more sustainable.`,
     },
     {
       role: "user",
@@ -29,7 +26,7 @@ export function AICoachChat({ activity }: AICoachChatProps) {
     {
       role: "assistant",
       content:
-        "Your average pace was consistent at around 2.6 m/s. For optimal endurance training, consider maintaining more time in zones 3-4 rather than pushing into zone 5 for most of the run.",
+        "Your average pace was steady (~2.6 m/s). For endurance improvements focus on longer time in Zones 3–4 and controlled intervals rather than prolonged Zone 5 efforts.",
     },
   ];
 
@@ -41,93 +38,139 @@ export function AICoachChat({ activity }: AICoachChatProps) {
   ];
 
   return (
-    <div className="flex flex-col h-full min-h-[500px]">
-      <div className="bg-linear-to-r from-primary/10 via-secondary/10 to-primary/10 p-6 border-b">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-primary/20 rounded-full">
-            <Bot className="w-6 h-6 text-primary" />
+    <div className="flex flex-col h-[calc(100vh-2rem)] min-h-[520px] rounded-2xl overflow-hidden shadow-lg bg-linear-to-b from-white/50 to-white/30">
+      {/* Header */}
+      <div className="px-6 py-5 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 text-white flex items-center gap-4">
+        <div className="relative">
+          <div className="p-2 rounded-full bg-white/12">
+            <Bot className="w-6 h-6 text-white" />
           </div>
-          <div>
-            <h3 className="font-semibold text-lg">AI Fitness Coach</h3>
-            <p className="text-sm text-muted-foreground">
-              Personalized insights about your workout
+          {/* subtle pulse */}
+          <motion.span
+            className="absolute -inset-1 rounded-full"
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            style={{ boxShadow: "0 6px 18px rgba(99,102,241,0.12)" }}
+          />
+        </div>
+
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold">AI Fitness Coach</h3>
+          <p className="text-xs opacity-90">
+            Personalized insights about your workout
+          </p>
+        </div>
+
+        <div className="hidden sm:flex items-center gap-3">
+          <div className="text-right">
+            <p className="text-xs opacity-90">Activity</p>
+            <p className="text-sm font-medium truncate">
+              {activity.activityName}
             </p>
           </div>
         </div>
       </div>
 
-      <ScrollArea className="flex-1 p-6">
-        <div className="space-y-4">
-          {messages.map((message, idx) => (
-            <motion.div
-              // biome-ignore lint/suspicious/noArrayIndexKey: Not mock messages, replace with message id when implemented
-              key={idx}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className={`flex gap-3 ${
-                message.role === "user" ? "flex-row-reverse" : ""
-              }`}
-            >
-              <Avatar
-                className={
-                  message.role === "assistant"
-                    ? "bg-primary/10"
-                    : "bg-secondary/10"
-                }
-              >
-                <AvatarFallback>
-                  {message.role === "assistant" ? (
-                    <Bot className="w-4 h-4 text-primary" />
-                  ) : (
-                    <User className="w-4 h-4 text-secondary" />
-                  )}
-                </AvatarFallback>
-              </Avatar>
-              <Card
-                className={`p-4 max-w-[80%] ${
-                  message.role === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted"
-                }`}
-              >
-                <p className="text-sm leading-relaxed">{message.content}</p>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+      {/* Messages */}
+      <ScrollArea className="flex-1 p-6 bg-linear-to-b from-white to-muted/5">
+        <div className="flex flex-col gap-4">
+          <AnimatePresence>
+            {messages.map((message, idx) => {
+              const isUser = message.role === "user";
+              return (
+                <motion.div
+                  key={`${message.role}-${idx}-${message.content.slice(0, 24)}`}
+                  initial={{ opacity: 0, y: 8, scale: 0.995 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  transition={{ delay: idx * 0.06, duration: 0.28 }}
+                  className={`flex items-start gap-3 ${isUser ? "flex-row-reverse" : ""}`}
+                >
+                  <Avatar
+                    className={isUser ? "bg-secondary/10" : "bg-primary/10"}
+                    aria-hidden
+                  >
+                    <AvatarFallback>
+                      {isUser ? (
+                        <User className="w-4 h-4 text-secondary" />
+                      ) : (
+                        <Bot className="w-4 h-4 text-primary" />
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
 
-        <div className="mt-6">
-          <p className="text-xs text-muted-foreground mb-3 flex items-center gap-2">
-            <Sparkles className="w-3 h-3" />
-            Suggested questions
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {suggestedPrompts.map((prompt) => (
-              <Button
-                key={prompt}
-                variant="outline"
-                size="sm"
-                className="text-xs"
-              >
-                {prompt}
-              </Button>
-            ))}
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className={`rounded-2xl p-4 max-w-[78%] shadow-sm ${
+                      isUser
+                        ? "bg-linear-to-r from-primary to-primary/90 text-white"
+                        : "bg-white/95 border border-muted/30"
+                    }`}
+                  >
+                    <p
+                      className={`text-sm leading-relaxed ${isUser ? "text-primary-foreground" : "text-muted-foreground"}`}
+                    >
+                      {message.content}
+                    </p>
+                  </motion.div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+
+          {/* Typing / assistant hint */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.16 }}
+            className="flex items-center gap-3 opacity-80"
+          >
+            <div className="w-2 h-2 rounded-full bg-primary/60 animate-pulse" />
+            <p className="text-xs text-muted-foreground">
+              AI is analyzing your activity for tailored tips...
+            </p>
+          </motion.div>
+
+          {/* Suggested prompts */}
+          <div className="mt-2">
+            <p className="text-xs text-muted-foreground mb-3 flex items-center gap-2">
+              <Sparkles className="w-3 h-3" />
+              Suggested questions
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {suggestedPrompts.map((prompt) => (
+                <Button
+                  key={prompt}
+                  variant="ghost"
+                  size="sm"
+                  className="px-3 py-1.5 bg-linear-to-r from-indigo-50 to-purple-50 text-sm rounded-full border border-muted/20"
+                >
+                  {prompt}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
       </ScrollArea>
 
-      <div className="p-4 border-t bg-muted/30">
-        <div className="flex gap-2">
+      {/* Composer */}
+      <div className="px-4 py-3 bg-white/60 border-t backdrop-blur-sm">
+        <div className="flex items-center gap-2">
           <Input
             placeholder="Ask your AI coach anything..."
-            className="flex-1"
+            className="flex-1 rounded-xl"
           />
-          <Button size="icon" className="shrink-0">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-linear-to-r from-indigo-600 to-pink-500 text-white shadow-md"
+            aria-label="Send message"
+          >
             <Send className="w-4 h-4" />
-          </Button>
+          </motion.button>
         </div>
-        <p className="text-xs text-muted-foreground mt-2 text-center">
+        <p className="text-xs text-center text-muted-foreground mt-2">
           AI insights based on your activity data
         </p>
       </div>
