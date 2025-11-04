@@ -12,6 +12,7 @@ import { motion } from "motion/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDuration } from "@/lib/formatters";
 import type { Activity } from "@/lib/types/activity";
+import { ActivityHeader } from "./activity-header";
 
 interface ActivityDetailsProps {
   activity: Activity;
@@ -95,51 +96,7 @@ export function ActivityDetails({ activity }: ActivityDetailsProps) {
 
   return (
     <div className="w-full space-y-6">
-      {/* Hero header */}
-      <div className="rounded-2xl overflow-hidden shadow-xl">
-        <div className="bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 p-6 text-white">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold leading-tight">
-                {activity.activityName}
-              </h2>
-              <p className="text-sm opacity-85 mt-1">
-                {new Date(activity.startTimeLocal).toLocaleString()}
-              </p>
-              <div className="mt-3 flex items-center gap-3">
-                <span className="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-sm">
-                  <Timer className="w-4 h-4 opacity-90" />
-                  {formatDuration(activity.durationSeconds)}
-                </span>
-                <span className="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-sm">
-                  <Ruler className="w-4 h-4 opacity-90" />
-                  {(activity.distanceMeters / 1000).toFixed(2)} km
-                </span>
-                <span className="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-sm">
-                  <Heart className="w-4 h-4 opacity-90" />
-                  {activity.avgHeartRateBpm} bpm
-                </span>
-              </div>
-            </div>
-
-            <div className="hidden md:flex flex-col items-end">
-              <div className="text-right">
-                <p className="text-sm text-white/90">Avg Pace</p>
-                <p className="text-lg font-semibold">
-                  {`${Math.floor(1000 / 60 / activity.avgSpeedMps)}:${Math.floor(
-                    ((1000 / 60 / activity.avgSpeedMps) % 1) * 60,
-                  )
-                    .toString()
-                    .padStart(2, "0")}/km`}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* subtle gradient strip */}
-        <div className="h-2 bg-linear-to-r from-indigo-500 via-purple-400 to-pink-400" />
-      </div>
+      <ActivityHeader activity={activity} />
 
       {/* Main content: left summary + right stats */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
