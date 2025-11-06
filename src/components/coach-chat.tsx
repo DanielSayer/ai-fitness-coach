@@ -38,7 +38,7 @@ export function AICoachChat({ activity }: AICoachChatProps) {
   ];
 
   return (
-    <div className="flex flex-col h-[calc(100vh-2rem)] min-h-[520px] rounded-2xl overflow-hidden shadow-lg bg-linear-to-b from-white/50 to-white/30">
+    <div className="flex flex-col h-[calc(100vh-4rem)] min-h-[520px] rounded-2xl overflow-hidden shadow-lg bg-linear-to-b from-white/50 to-white/30">
       {/* Header */}
       <div className="px-6 py-5 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 text-white flex items-center gap-4">
         <div className="relative">

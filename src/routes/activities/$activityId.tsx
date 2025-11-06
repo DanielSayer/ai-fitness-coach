@@ -1,7 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeftIcon } from "lucide-react";
 import { ActivityDetails } from "@/components/activity-details";
-import { AICoachChat } from "@/components/coach-chat";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  buildDefaultInsights,
+  buildDefaultWeeklyPlan,
+  CoachOverview,
+} from "@/components/coach/overview";
 import { activityMock } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/activities/$activityId")({
@@ -10,21 +14,21 @@ export const Route = createFileRoute("/activities/$activityId")({
 
 function ActivityPage() {
   const { activityId } = Route.useParams();
-
   const activity = activityMock;
 
-  return (
-    <div className="container mx-auto p-4 min-h-screen grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div className="overflow-hidden h-[calc(100vh-2rem)]">
-        <ScrollArea
-          className="h-full box-border pr-4"
-          style={{ scrollbarGutter: "stable both-edges" }} // camelCase for React style prop
-        >
-          <ActivityDetails activity={activity} />
-        </ScrollArea>
-      </div>
+  const insights = buildDefaultInsights();
+  const weeklyPlan = buildDefaultWeeklyPlan();
 
-      <AICoachChat activity={activity} />
+  return (
+    <div className="container mx-auto p-4 min-h-screen space-y-2">
+      <Link to="/" className="flex items-center">
+        <ArrowLeftIcon className="size-5 me-2 text-muted-foreground" />
+        Back
+      </Link>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <ActivityDetails activity={activity} />
+        <CoachOverview insights={insights} weeklyPlan={weeklyPlan} />
+      </div>
     </div>
   );
 }
